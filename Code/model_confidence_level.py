@@ -59,7 +59,7 @@ class model_confidence:
 		top_peak_days = self.peak_data.nlargest(number_of_days, 'actual')
 		self.peak_data = self.peak_data.loc[top_peak_days.index]
 		self.peak_date = top_peak_days
-		self.peak_data.to_csv("ERCOT_BASE_PEAK_ACTUAL.csv")
+		self.peak_data.to_csv("../Data/Results/ERCOT_BASE_PEAK_ACTUAL.csv")
 		print("ACTUAL PEAK DAYS")
 		print(top_peak_days)
 
@@ -68,7 +68,7 @@ class model_confidence:
 		print("BASE MODEL PEAK DAYS")
 		print(self.peak_data.nlargest(number_of_days, 'value'))
 		model_peak_info = self.peak_data.nlargest(number_of_days, 'value')
-		model_peak_info.to_csv("ERCOT_BASE_PEAK_VALUE.csv")
+		model_peak_info.to_csv("../Data/Results/ERCOT_BASE_PEAK_VALUE.csv")
 
 		# META MODEL TOP N PEAK DAYS
 		#print("META MODEL PEAK DAYS")
