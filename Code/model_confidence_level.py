@@ -59,7 +59,7 @@ class model_confidence:
 		top_peak_days = self.peak_data.nlargest(number_of_days, 'actual')
 		self.peak_data = self.peak_data.loc[top_peak_days.index]
 		self.peak_date = top_peak_days
-		self.peak_data.to_csv("../Data/Results/ERCOT_BASE_PEAK_ACTUAL.csv")
+		self.peak_data.to_csv("Data/Results/ERCOT_BASE_PEAK_ACTUAL.csv")
 		print("ACTUAL PEAK DAYS")
 		print(top_peak_days)
 
@@ -68,7 +68,7 @@ class model_confidence:
 		print("BASE MODEL PEAK DAYS")
 		print(self.peak_data.nlargest(number_of_days, 'value'))
 		model_peak_info = self.peak_data.nlargest(number_of_days, 'value')
-		model_peak_info.to_csv("../Data/Results/ERCOT_BASE_PEAK_VALUE.csv")
+		model_peak_info.to_csv("Data/Results/ERCOT_BASE_PEAK_VALUE.csv")
 
 		# META MODEL TOP N PEAK DAYS
 		#print("META MODEL PEAK DAYS")
@@ -86,7 +86,7 @@ class model_confidence:
 		hourly_result_base= self.peak_hour_accuracy(model_base_forecast, 'BASE')
 		hourly_result_ensemble= self.peak_hour_accuracy(model_ensemble_forecast, 'ENSEMBLE')
 
-		return None#day_result, hourly_result
+		return day_result_base, day_result_ensemble, hourly_result_base #day_result, hourly_result
 
 	def thres_mae_accuracy(self, max_value, max_actual):
 		if(max_actual>self.peak_threshold):
@@ -157,6 +157,8 @@ class model_confidence:
 		print(f'Mean absolute of (max_forecast - max_load) of peak days {mean_mae} and error % = {(mean_mae/max_actual_load)*100}')
 		print(f'Mean absolute of thres % *(max_forecast - max_load) of peak days error% {(mean_thres_mae/max_actual_load)*100} and confidence % = {(1 - (mean_thres_mae/max_actual_load))*100}')
 
+		return max_actual_load, np.round(mean_mae,3), np.round((1 - (mean_thres_mae/max_actual_load))*100,3), np.round(mean_thres_mae,3)
+
 	def peak_hour_accuracy(self, model, title):   
 
 		#peak_date = self.peak_date
@@ -197,8 +199,8 @@ class model_confidence:
 		acc_1_or_2_or_3_peak_hour = (df_er.iloc[:, 1:4].sum().sum()/len(df_er.iloc[:,:]))*100
 		print("Accuracy of any of the top 3 forecast aligns with actual" ,acc_1_or_2_or_3_peak_hour, '%')
 
-		return df_er
-
+		return acc_1_or_2_or_3_peak_hour
+'''
 def main():
 	path = '../Data/NYISO_September_combine_data.csv'
 	#path = '../Data/NYISO_August_combine_data.csv'
@@ -206,7 +208,9 @@ def main():
 
 	#path = '../Data/ERCOT_September_combine_data.csv'
 	#peak_day = model_confidence(path, 'ERCOT', 70000)
-	peak_day()
+	day_result_base, day_result_ensemble = peak_day()
+	return day_result_base, day_result_ensemble, 29000, 'NYISO'
 	
 if __name__ == '__main__':
 	main()
+'''
